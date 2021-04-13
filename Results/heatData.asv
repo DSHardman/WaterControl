@@ -2,10 +2,7 @@
 % if two agents are passed, heatmaps of the differences are plotted
 
 function heatData(agent, agent2)
-    
-    subplot = @(m,n,p)subtightplot(m,n,p,[0.01 0.01], [0.01 0.05], [0.04 0.01]);
-
-    rbins = 4;
+    rbins = 5;
     thetabins = 25;
     predictiondata = NaN(thetabins,thetabins,rbins,12);
     
@@ -14,16 +11,13 @@ function heatData(agent, agent2)
         mcritic2 = agent2.getCritic();
     end
     
-    heatvariables = ["Prediction" "A_x" "f_x" "\phi_x" "A_y" "f_y" "\phi_y" "A_z"...
-    "f_z" "d" "\theta_x" "\theta_y"];
+    heatvariables = ["Prediction" "A_x" "f_x" "xphase" "yamp" "yfreq" "yphase" "zamp"...
+    "zfreq" "depth" "anglex" "angley"];
 
     for rplot = 1:rbins
         for tf = 1:thetabins
             for ts = 1:thetabins
-                %state = [(2*(rplot-1)/(rbins-1))-1;...
-                %    (2*(ts-1)/(thetabins-1))-1;...
-                %    (2*(tf-1)/(thetabins-1))-1];
-                state = [((12/13)*(rplot-1)/(rbins-1))-1;...
+                state = [(2*(rplot-1)/(rbins-1))-1;...
                     (2*(ts-1)/(thetabins-1))-1;...
                     (2*(tf-1)/(thetabins-1))-1];
                 action = cell2mat(getAction(agent,state));
@@ -37,8 +31,7 @@ function heatData(agent, agent2)
                             action2(i) - action(i);
                     end
                 else
-                    %predictiondata(ts,tf,rplot,1) = mcritic.getValue(state, action);
-                    predictiondata(ts,tf,rplot,1) = 1.15*mcritic.getValue(state, action);
+                    predictiondata(ts,tf,rplot,1) = mcritic.getValue(state, action);
                     for i = 1:11
                         predictiondata(ts,tf,rplot,i+1) = action(i);
                     end
@@ -48,10 +41,10 @@ function heatData(agent, agent2)
     end
 
 
-    figure('Position', 1e3*[0.0882 0.4390 1.2344 0.4200]);
+    figure();
     for a = 1:12
-        for i = 1:rbins
-            subplot(rbins,12,(i-1)*12+a);
+        for i = 1:5
+            subplot(5,12,(i-1)*12+a);
             heatmap(-1+(1/thetabins):(2/thetabins):1-(1/thetabins),...
                 1-(1/thetabins):-(2/thetabins):-1+(1/thetabins),...
                 flipud(predictiondata(:,:,i,a)),...
@@ -59,7 +52,7 @@ function heatData(agent, agent2)
             %xlabel('\theta_{start}');
             %ylabel('\theta_{target}');
             if a == 1
-                ylabel(strcat("r = ", string((2*(i-1)/(rbins-1))-1)))
+                ylabel(strcat("r = ", string((2*i/rbins)-(7/6))))
             end
             if i == 1
                 title(heatvariables(a))
@@ -73,13 +66,13 @@ function heatData(agent, agent2)
                 end
             else
                 if nargin == 2
-                    %limits = 2*[min(predictiondata(:,:,:,1),[],'all'),...
-                    %    max(predictiondata(:,:,:,1),[],'all')];
-                    caxis([-1.25 2.25]);
+                    limits = 2*[min(predictiondata(:,:,:,1),[],'all'),...
+                        max(predictiondata(:,:,:,1),[],'all')];
+                    caxis(limits);
                 else
-                    %limits = [min(predictiondata(:,:,:,1),[],'all'),...
-                    %    max(predictiondata(:,:,:,1),[],'all')];
-                    caxis([-1.25 2.25]);
+                    limits = [min(predictiondata(:,:,:,1),[],'all'),...
+                        max(predictiondata(:,:,:,1),[],'all')];
+                    caxis(limits);
                 end
             end
             Ax = gca;
