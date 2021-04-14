@@ -1,5 +1,4 @@
 % Compares and plots statistics between all shapes.
-% Only used for agent 2481 Testing
 
 rm = zeros(7,1);
 rs = zeros(7,1);
@@ -10,16 +9,18 @@ es = zeros(7,1);
 lm = zeros(7,1);
 ls = zeros(7,1);
 
-shapes = [Circle8; Circle20; Circle46; Circle72; Square22; Square35; Quatrefoil];
+shapes = [Circle20; Circle8; Circle46; Circle72; Square22; Square35; Quatrefoil];
 
 for i = 1:7 
     [rm(i), rs(i), pm(i), ps(i), em(i), es(i), lm(i), ls(i)] = shapes(i).stats();
 end
 
 
-X = categorical({'8mm Circle','20mm Circle','46mm Circle','72mm Circle','22mm Square','35mm Square','25mm Quatrefoil'});
-X = reordercats(X,{'8mm Circle','20mm Circle','46mm Circle','72mm Circle','22mm Square','35mm Square','25mm Quatrefoil'});
+X = categorical({'20mm Circle','8mm Circle','46mm Circle','72mm Circle','22mm Square','35mm Square','25mm Quatrefoil'});
+X = reordercats(X,{'20mm Circle','8mm Circle','46mm Circle','72mm Circle','22mm Square','35mm Square','25mm Quatrefoil'});
 
+
+%% This section used for agent 2481 Testing
 figure();
 
 subplot(2,4,1);
@@ -68,7 +69,24 @@ ylabel('\sigma_{Path Length}')
 
 sgtitle('\mu & \sigma Statistics');
 
+%% Agent 5000 testing
+
+figure('Position', [501 316 656 409]);
+fs = 15;
+
+b = bar(X,rm, 'FaceColor', 'flat', 'EdgeColor', 'none');
+b.CData(1,:) = 1/255*[209 99 54];
+hold on;
+yline(pm(1), '-k', 'Predicted', 'FontSize', fs, 'LineWidth', 2);
+set(gca, 'FontSize', fs, 'LineWidth', 2);
+box off
+
+ylabel('\mu_{Reward}')
+%title('Rewards');
+
+
 %%
+%{
 figure();
 plot5best(Circle8,1,1);
 plot5best(Circle20,2,1);
@@ -102,3 +120,4 @@ function plot5best(shaperesults,column,descend)
         shaperesults.plotPath(best(i))
     end
 end
+%}

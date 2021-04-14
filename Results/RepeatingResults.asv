@@ -49,20 +49,17 @@ classdef RepeatingResults < handle
        function [rew_mu, rew_sigma, pred_mu, pred_sigma,...
             err_mu, err_sigma, len_mu, len_sigma] = stats(obj)
             rew_mu = mean(obj.Rewards, 'all');
-            rew_sigma = std(obj.Rewards(:));
+            rew_sigma = std(obj.Rewards, 'all');
             pred_mu = mean(obj.Predictions, 'all');
-            pred_sigma = std(obj.Predictions(:));
+            pred_sigma = std(obj.Predictions, 'all');
             err_mu = mean(obj.Predictions - obj.Rewards, 'all');
-            pr = obj.Predictions*ones(1,obj.m);
-            err_sigma = std(pr(:) - obj.Rewards(:));
-            lengths = zeros(obj.n,obj.m);
+            err_sigma = std(obj.Predictions - obj.Rewards, 'all');
+            lengths = zeros(obj.n,1);
             for i = 1:obj.n
-                for j = 1:obj.m
-                    lengths(i,j) = obj.Paths(i,j).getLength();
-                end
+                lengths(i) = obj.Paths(i).getLength();
             end
-            len_mu = mean(lengths, 'all');
-            len_sigma = std(lengths(:));
+            len_mu = mean(lengths);
+            len_sigma = std(lengths);
             
         end
         
