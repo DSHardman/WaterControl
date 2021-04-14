@@ -242,14 +242,19 @@ classdef ShapeResults < handle
         end
        
         function pathLengths(obj)
+            figure('Position', [469 271 700 420]);
             lengths = zeros(obj.n,1);
             for i = 1:obj.n
                 lengths(i) = obj.Paths(i).getLength();
             end
-            histogram(lengths)
-            title(obj.Title);
-            xlabel('Path Length')
+            histogram(lengths, 'FaceColor', 'k', 'FaceAlpha', 1,...
+                'EdgeColor', 'w');
+            %title(obj.Title);
+            xlabel('Path Length (mm)')
             ylabel('Quantity');
+            set(gca, 'FontSize', 15, 'LineWidth', 2);
+            box off
+            xlim([0 4000]);
         end
         
         function plotPath(obj, num)
