@@ -67,9 +67,15 @@ classdef ShapeResults < handle
         end
         
         function plotErrorDist(obj)
-            histogram(obj.Predictions - obj.Rewards);
-            xlabel('Predicted Reward - Actual Reward')
+            figure('Position', [432 275 776 491]);
+            histogram(obj.Predictions - obj.Rewards, 'FaceColor', 'k',...
+                'EdgeColor', 'w', 'FaceAlpha', 1);
+            xlabel('Predicted - Actual Reward')
             ylabel('Quantity')
+            xlim([-3 3])
+            ylim([0 210])
+            set(gca, 'FontSize', 16, 'LineWidth', 2);
+            box off
         end
         
         function plotActionSpace(obj)
