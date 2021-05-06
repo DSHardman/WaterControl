@@ -68,9 +68,9 @@ classdef ShapeResults < handle
         
         function plotErrorDist(obj)
             figure('Position', [432 275 776 491]);
-            histogram(obj.Predictions - obj.Rewards, 'FaceColor', 'k',...
+            histogram(obj.Rewards - obj.Predictions, 'FaceColor', 'k',...
                 'EdgeColor', 'w', 'FaceAlpha', 1);
-            xlabel('Predicted - Actual Reward')
+            xlabel('Actual - Predicted Reward')
             ylabel('Quantity')
             xlim([-3 3])
             ylim([0 210])
@@ -163,7 +163,7 @@ classdef ShapeResults < handle
             
             %Predictions
             rbins = 4;
-            thetabins = 15;
+            thetabins = 14;
             predictiondata = NaN(thetabins,thetabins,rbins,1);
             mcritic = agent.getCritic();
             for rplot = 1:rbins
@@ -220,6 +220,15 @@ classdef ShapeResults < handle
                     1-(1/thetabins):-(2/thetabins):-1+(1/thetabins),...
                     flipud(rewarddata(:,:,i)), 'ColorbarVisible','off',...
                     'GridVisible','off', 'CellLabelColor','none');
+
+                %{
+                heatmap(-1+(1/thetabins):(2/thetabins):1-(1/thetabins),...
+                    1-(1/thetabins):-(2/thetabins):-1+(1/thetabins),...
+                    flipud(rewarddata(:,:,i)) - flipud(predictiondata(:,:,i,1)),...
+                    'ColorbarVisible','off',...
+                    'GridVisible','off', 'CellLabelColor','none');
+                %}
+                
                 colormap winter
                 caxis(limits);
                 Ax = gca;
@@ -237,6 +246,56 @@ classdef ShapeResults < handle
                         savename+".eps", 'ContentType',...
                         'vector', 'BackgroundColor', 'none');
                 end
+            end
+            
+        end
+        
+        function errorHeatMaps(obj, agent)
+            rbins = 4;
+            thetabins = 6;
+            predictiondata = NaN(thetabins,thetabins,rbins,1);
+            mcritic = agent.getCritic();
+            for rplot = 1:rbins
+                for tf = 1:thetabins
+                    for ts = 1:thetabins
+                        state = [(12/13)*((rplot-1)/(rbins-1))-1;...
+                            (2*(ts-1)/(thetabins-1))-1;...
+                            (2*(tf-1)/(thetabins-1))-1];
+                        action = cell2mat(getAction(agent,state));
+                        predictiondata(ts,tf,rplot,1) = mcritic.getValue(state, action);
+                    end
+                end
+            end
+            
+            rewarddata = NaN(thetabins,thetabins,rbins);
+            number_so_far = zeros(thetabins,thetabins,rbins);
+            for i = 1:obj.n
+                rplot = max(1,ceil(((min((13/6)*(obj.States(i,1)+1)-1,1)+1)/2)*rbins));
+                ts = max(1,ceil(((min(obj.States(i,2),1)+1)/2)*thetabins));
+                tf = max(1,ceil(((min(obj.States(i,3),1)+1)/2)*thetabins));
+                if isnan(rewarddata(ts,tf,rplot))
+                    rewarddata(ts,tf,rplot) = obj.Rewards(i);
+                    number_so_far(ts,tf,rplot) = 1;
+                else
+                    rewarddata(ts,tf,rplot) = obj.Rewards(i) + rewarddata(ts,tf,rplot);
+                    number_so_far(ts,tf,rplot) = number_so_far(ts,tf,rplot) + 1;
+                end
+            end
+            rewarddata = rewarddata./number_so_far;
+            
+            figure('Position', [200 500 1300 300]);
+            for i = 1:rbins
+                subplot(1,rbins,i);
+                heatmap(-1+(1/thetabins):(2/thetabins):1-(1/thetabins),...
+                    1-(1/thetabins):-(2/thetabins):-1+(1/thetabins),...
+                    flipud(rewarddata(:,:,i)) - flipud(predictiondata(:,:,i,1)),...
+                    'ColorbarVisible','off',...
+                    'GridVisible','off', 'CellLabelColor','none');
+                colormap winter
+                caxis([-1.2 0.8]);
+                Ax = gca;
+                Ax.XDisplayLabels = nan(size(Ax.XDisplayData));
+                Ax.YDisplayLabels = nan(size(Ax.YDisplayData));
             end
             
         end
