@@ -101,6 +101,21 @@ classdef TrackedPath
             end
         end
         
+        function d = proximity(obj, theta)
+            % returns minimum distance of object's centre from point
+            % at theta on the container's edge
+            % theta consistent with paper figures & polar coordinate
+            %theta = -theta + pi/2;
+            
+            theta = -theta + pi/4;
+            
+            [xtarget,ytarget] = pol2cart(theta,175);
+            d = 1000;
+            for i = 1:length(obj.xvec)
+                d = min(d, norm([xtarget; ytarget]-[obj.xvec(i); obj.yvec(i)]));
+            end
+        end
+        
     end
 end
 
