@@ -150,6 +150,50 @@ classdef RepeatingResults < handle
                 end
             end
         end
+        
+        function lyapexp(obj, task, n1, n2)
+        % plot separation between two paths (to calculate lyapunov
+        % exponent)
+        finaltime = min(obj.Paths(task,n1).timevec(end),...
+            obj.Paths(task,n2).timevec(end));
+        
+        timesteps = 50;
+        times = 0:finaltime/(timesteps-1):finaltime;
+        delta = zeros(size(times));
+        
+        for i = 1:timesteps
+            pos1 = [interp1(obj.Paths(task,n1).timevec,...
+                obj.Paths(task,n1).xvec,times(i));...
+                interp1(obj.Paths(task,n1).timevec,...
+                obj.Paths(task,n1).yvec,times(i))];
+            
+            pos2 = [interp1(obj.Paths(task,n2).timevec,...
+                obj.Paths(task,n2).xvec,times(i));...
+                interp1(obj.Paths(task,n2).timevec,...
+                obj.Paths(task,n2).yvec,times(i))];
+            
+            delta(i) = norm(pos1 - pos2);
+        end
+        
+        %delta = delta./delta(find(~isnan(delta), 1)); %normalise deltas by first non-nan value
+        plot(times, log(delta));
+
+        end
+        
+        function lyapexpall(obj, task)
+            pairs = nchoosek(1:obj.m, 2);
+            for i = 1:size(pairs, 1)
+                obj.lyapexp(task, pairs(i,1), pairs(i,2));
+                hold on
+            end
+        end
+        
+        function scattertimes(obj, task, x)
+            for i = 1:obj.m
+                scatter(x, obj.Paths(task, i).timevec(end));
+                hold on
+            end
+        end
        
         
         function removeEntry(obj,inds)
