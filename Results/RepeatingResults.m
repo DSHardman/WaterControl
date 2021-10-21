@@ -151,41 +151,72 @@ classdef RepeatingResults < handle
             end
         end
         
-        function lyapexp(obj, task, n1, n2)
+        function expout = lyapexp(obj, task, n1, n2)
         % plot separation between two paths (to calculate lyapunov
         % exponent)
-        finaltime = min(obj.Paths(task,n1).timevec(end),...
-            obj.Paths(task,n2).timevec(end));
+         finaltime = min([obj.Paths(task,n1).timevec(end),...
+             obj.Paths(task,n2).timevec(end)]);
+        
+        %finaltime = 5;
         
         timesteps = 50;
         times = 0:finaltime/(timesteps-1):finaltime;
         delta = zeros(size(times));
         
         for i = 1:timesteps
-            pos1 = [interp1(obj.Paths(task,n1).timevec,...
+            pos1 = [
+                interp1(obj.Paths(task,n1).timevec,...
                 obj.Paths(task,n1).xvec,times(i));...
                 interp1(obj.Paths(task,n1).timevec,...
-                obj.Paths(task,n1).yvec,times(i))];
+                obj.Paths(task,n1).yvec,times(i));
+                interp1(obj.Paths(task, n1).timevec(2:end),...
+                diff(obj.Paths(task,n1).xvec), times(i));
+                interp1(obj.Paths(task, n1).timevec(2:end),...
+                diff(obj.Paths(task,n1).yvec), times(i));
+                ];
             
-            pos2 = [interp1(obj.Paths(task,n2).timevec,...
+            pos2 = [
+                interp1(obj.Paths(task,n2).timevec,...
                 obj.Paths(task,n2).xvec,times(i));...
                 interp1(obj.Paths(task,n2).timevec,...
-                obj.Paths(task,n2).yvec,times(i))];
+                obj.Paths(task,n2).yvec,times(i));
+                interp1(obj.Paths(task, n2).timevec(2:end),...
+                diff(obj.Paths(task,n2).xvec), times(i));
+                interp1(obj.Paths(task, n2).timevec(2:end),...
+                diff(obj.Paths(task,n2).yvec), times(i));
+                ];
             
             delta(i) = norm(pos1 - pos2);
         end
         
-        %delta = delta./delta(find(~isnan(delta), 1)); %normalise deltas by first non-nan value
-        plot(times, log(delta));
-
+        %plot(times, log(delta./delta(find(~isnan(delta), 1)))./times);
+        
+        start = find(~isnan(delta), 1);
+        
+        delta = delta./delta(start); %normalise deltas by first non-nan value
+      
+        sum = 0;
+        for i = start:length(delta)
+            sum = sum + log(delta(i));
+        end
+        expout = sum/(times(end)*(length(delta)-start));
+        
+        % This section found a least squares linear fit in the log plot
+        %         A = [times; ones(size(times))].';
+        %         firstvalue = find(~isnan(delta), 1);
+        %         linearfit = A(firstvalue:end,:)\(log(delta(firstvalue:end)).');
+        %         expout = linearfit(1);
         end
         
-        function lyapexpall(obj, task)
+        function average = lyapexpall(obj, task, position)
             pairs = nchoosek(1:obj.m, 2);
+            expsout = zeros(size(pairs,1), 1);
             for i = 1:size(pairs, 1)
-                obj.lyapexp(task, pairs(i,1), pairs(i,2));
+                expsout(i) = obj.lyapexp(task, pairs(i,1), pairs(i,2));
                 hold on
             end
+            average = mean(expsout);
+            scatter(position*ones(size(expsout)), expsout);
         end
         
         function scattertimes(obj, task, x)

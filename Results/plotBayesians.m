@@ -15,19 +15,19 @@ colors = 1/255*[[100 100 100]; [0 0 0]; [10 110 251]];
 
 %% path plots
 subplot(2,3,1);
-stringbase = 'C:\Users\dshar\OneDrive - University of Cambridge\Documents\PhD\Water Control\Results\Motions\Bayesian\0\Bayes0_3_';
+stringbase = 'C:\Users\dshar\OneDrive - University of Cambridge\Documents\PhD\Water Control\Results\Bayesian\0\Bayes0_3_';
 bayes_state = [-3/13;-1;-1];
 VisualiseBayesian
 title('0^o');
 
 subplot(2,3,2);
-stringbase = 'C:\Users\dshar\OneDrive - University of Cambridge\Documents\PhD\Water Control\Results\Motions\Bayesian\90\Bayes90_3_';
+stringbase = 'C:\Users\dshar\OneDrive - University of Cambridge\Documents\PhD\Water Control\Results\Bayesian\90\Bayes90_3_';
 bayes_state = [-3/13;-1;0];
 VisualiseBayesian
 title('90^o');
 
 subplot(2,3,3);
-stringbase = 'C:\Users\dshar\OneDrive - University of Cambridge\Documents\PhD\Water Control\Results\Motions\Bayesian\180\Bayes180_3_';
+stringbase = 'C:\Users\dshar\OneDrive - University of Cambridge\Documents\PhD\Water Control\Results\Bayesian\180\Bayes180_3_';
 bayes_state = [-3/13;-0.85;1];
 VisualiseBayesian
 title('180^o');
