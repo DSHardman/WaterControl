@@ -215,28 +215,51 @@ classdef RepeatingResults < handle
         end
         
         
-        function ccout = xcorr(obj, task, n1, n2)
-            timesteps = 500;
-            times1 = 0:obj.Paths(task,n1).timevec(end)/...
-                (timesteps-1):obj.Paths(task,n1).timevec(end);
-            times2 = 0:obj.Paths(task,n2).timevec(end)/...
-                (timesteps-1):obj.Paths(task,n2).timevec(end);
-            path1 = interp1(obj.Paths(task,n1).timevec,...
-                obj.Paths(task,n1).radiusvec, times1);
-            path2 = interp1(obj.Paths(task,n2).timevec,...
-                obj.Paths(task,n2).radiusvec, times2);
+        function expout = lyapexp(obj, task, n1, n2)
+        % plot separation between two paths (to calculate lyapunov
+        % exponent)
+        
+        seconds = 2; % Consider first few seconds only
+        
+         finaltime = min([obj.Paths(task,n1).timevec(end),...
+             obj.Paths(task,n2).timevec(end), seconds]);
+        
+        %finaltime = 5;
+        
+        timesteps = 50;
+        times = 0:finaltime/(timesteps-1):finaltime;
+        delta = zeros(size(times));
+        
+        for i = 1:timesteps
+            pos1 = [
+                interp1(obj.Paths(task,n1).timevec,...
+                obj.Paths(task,n1).xvec,times(i));...
+                interp1(obj.Paths(task,n1).timevec,...
+                obj.Paths(task,n1).yvec,times(i));
+                interp1(obj.Paths(task, n1).timevec(2:end),...
+                diff(obj.Paths(task,n1).xvec), times(i));
+                interp1(obj.Paths(task, n1).timevec(2:end),...
+                diff(obj.Paths(task,n1).yvec), times(i));
+                ];
             
-            path1 = path1(~isnan(path1));
-            path2 = path2(~isnan(path2));
-%             
-%             [c,~] = xcorr(path1, path2);
-%             ccout = max(c);
-
-            ccout = dtw(path1, path2);
-
-%             ccout = dtw(obj.Paths(task, n1).radiusvec,...
-%                 obj.Paths(task, n2).radiusvec);
+            pos2 = [
+                interp1(obj.Paths(task,n2).timevec,...
+                obj.Paths(task,n2).xvec,times(i));...
+                interp1(obj.Paths(task,n2).timevec,...
+                obj.Paths(task,n2).yvec,times(i));
+                interp1(obj.Paths(task, n2).timevec(2:end),...
+                diff(obj.Paths(task,n2).xvec), times(i));
+                interp1(obj.Paths(task, n2).timevec(2:end),...
+                diff(obj.Paths(task,n2).yvec), times(i));
+                ];
+            
+            delta(i) = norm(pos1 - pos2);
         end
+        
+        end
+        
+        
+        
         
         function average = lyapexpall(obj, task, position)
             pairs = nchoosek(1:obj.m, 2);
@@ -247,17 +270,6 @@ classdef RepeatingResults < handle
             end
             average = mean(expsout);
             scatter(position*ones(size(expsout)), expsout);
-        end
-        
-        function average = xcorrall(obj, task, position)
-            pairs = nchoosek(1:obj.m, 2);
-            ccsout = zeros(size(pairs,1), 1);
-            for i = 1:size(pairs, 1)
-                ccsout(i) = obj.xcorr(task, pairs(i,1), pairs(i,2));
-                hold on
-            end
-            average = mean(ccsout);
-            scatter(position*ones(size(ccsout)), ccsout);
         end
         
         function scattertimes(obj, task, x)
