@@ -215,7 +215,7 @@ classdef RepeatingResults < handle
         end
         
         
-        function ccout = xcorr(obj, task, n1, n2)
+        function warpeddistance = warp(obj, task, n1, n2)
             timesteps = 500;
             times1 = 0:obj.Paths(task,n1).timevec(end)/...
                 (timesteps-1):obj.Paths(task,n1).timevec(end);
@@ -228,14 +228,8 @@ classdef RepeatingResults < handle
             
             path1 = path1(~isnan(path1));
             path2 = path2(~isnan(path2));
-%             
-%             [c,~] = xcorr(path1, path2);
-%             ccout = max(c);
 
-            ccout = dtw(path1, path2);
-
-%             ccout = dtw(obj.Paths(task, n1).radiusvec,...
-%                 obj.Paths(task, n2).radiusvec);
+            warpeddistance = dtw(path1, path2);
         end
         
         function average = lyapexpall(obj, task, position)
@@ -249,15 +243,15 @@ classdef RepeatingResults < handle
             scatter(position*ones(size(expsout)), expsout);
         end
         
-        function average = xcorrall(obj, task, position)
+        function average = warpall(obj, task, position)
             pairs = nchoosek(1:obj.m, 2);
-            ccsout = zeros(size(pairs,1), 1);
+            warpsout = zeros(size(pairs,1), 1);
             for i = 1:size(pairs, 1)
-                ccsout(i) = obj.xcorr(task, pairs(i,1), pairs(i,2));
+                warpsout(i) = obj.xcorr(task, pairs(i,1), pairs(i,2));
                 hold on
             end
-            average = mean(ccsout);
-            scatter(position*ones(size(ccsout)), ccsout);
+            average = mean(warpsout);
+            scatter(position*ones(size(warpsout)), warpsout);
         end
         
         function scattertimes(obj, task, x)

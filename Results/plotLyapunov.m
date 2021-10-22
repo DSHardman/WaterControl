@@ -12,10 +12,10 @@ for task = 1:5
     rad20 = zeros(10,1);
     pairs = nchoosek(1:5, 2);
     for i = 1:10
-        rad8(i) = Circle8.xcorr(task, pairs(i,1), pairs(i,2));
-        rad20(i) = Circle20.xcorr(task, pairs(i,1), pairs(i,2));
-        rad46(i) = Circle46.xcorr(task, pairs(i,1), pairs(i,2));
-        rad72(i) = Circle72.xcorr(4, pairs(i,1), pairs(i,2));
+        rad8(i) = Circle8.warp(task, pairs(i,1), pairs(i,2));
+        rad20(i) = Circle20.warp(task, pairs(i,1), pairs(i,2));
+        rad46(i) = Circle46.warp(task, pairs(i,1), pairs(i,2));
+        rad72(i) = Circle72.warp(4, pairs(i,1), pairs(i,2));
     end
     % pairs = nchoosek(1:10, 2);
     % for i = 1:45
