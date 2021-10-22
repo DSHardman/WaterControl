@@ -37,6 +37,30 @@ end
 
 set(gcf, 'Position', 1000*[0.2826    0.2538    1.0280    0.6024], 'Color', 'w');
 
+%% circle 20 tasks
+figure();
+
+dist1 = zeros(45,1);
+dist2 = zeros(45,1);
+dist3 = zeros(45,1);
+dist4 = zeros(45,1);
+dist5 = zeros(45,1);
+
+pairs = nchoosek(1:10, 2);
+for i = 1:45
+    dist1(i) = Circle20.warp(1, pairs(i,1), pairs(i,2));
+    dist2(i) = Circle20.warp(2, pairs(i,1), pairs(i,2));
+    dist3(i) = Circle20.warp(3, pairs(i,1), pairs(i,2));
+    dist4(i) = Circle20.warp(4, pairs(i,1), pairs(i,2));
+    dist5(i) = Circle20.warp(5, pairs(i,1), pairs(i,2));
+end
+
+erroradd3(dist1, dist2, dist3, dist4, dist5, 1/255*[217 95 2]);
+box off
+set(gca, 'FontSize', 15, 'LineWidth', 2);
+xlabel('Task');
+ylabel('Path Variation (mm)');
+
 %% bayesian cases
 
 figure();
@@ -199,11 +223,30 @@ function erroradd2(times8, times20, times46, times72, col)
         'Color', 'k', 'LineStyle', 'none');
 end
 
+
+
+function erroradd3(task1, task2, task3, task4, task5, col)
+    [neg1, pos1] = negposerror(task1);
+    [neg2, pos2] = negposerror(task2);
+    [neg3, pos3] = negposerror(task3);
+    [neg4, pos4] = negposerror(task4);
+    [neg5, pos5] = negposerror(task5);
+    
+    plot(1:5,[mean(task1); mean(task2); mean(task3); mean(task4); mean(task5)],...
+        'LineWidth', 2, 'Color', col);
+    hold on
+    errorbar(1:5,[mean(task1); mean(task2); mean(task3); mean(task4); mean(task5)],...
+        [neg1; neg2; neg3; neg4; neg5], [pos1; pos2; pos3; pos4; pos5], 'LineWidth', 2,...
+        'Color', 'k', 'LineStyle', 'none');
+end
+
 function [negerror, poserror] = negposerror(times)
-    negerror = 0;
-    poserror = 0;
-    for i = 1:length(times)
-        negerror = min(negerror, times(i) - mean(times));
-        poserror = max(poserror, times(i) - mean(times));
-    end
+    negerror = std(times);
+    poserror = std(times);
+%     negerror = 0;
+%     poserror = 0;
+%     for i = 1:length(times)
+%         negerror = min(negerror, times(i) - mean(times));
+%         poserror = max(poserror, times(i) - mean(times));
+%     end
 end

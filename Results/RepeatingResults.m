@@ -247,7 +247,7 @@ classdef RepeatingResults < handle
             pairs = nchoosek(1:obj.m, 2);
             warpsout = zeros(size(pairs,1), 1);
             for i = 1:size(pairs, 1)
-                warpsout(i) = obj.xcorr(task, pairs(i,1), pairs(i,2));
+                warpsout(i) = obj.warp(task, pairs(i,1), pairs(i,2));
                 hold on
             end
             average = mean(warpsout);
