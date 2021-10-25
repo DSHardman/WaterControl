@@ -28,14 +28,14 @@ for task = 1:5
     %set(gcf, 'Position', [489   469   776   390]);
     xlabel('Circle Diameter (mm)')
     ylim([0 15000])
-    ylabel('Path Variation (mm)');
+    ylabel('r_{DTW}(mm)');
     %legend({'DDPG'}, 'Location', 'se')
     %title('Changing d_{object}')
     tasks = ["i"; "ii"; "iii"; "iv"; "v"];
     title('Task ' + tasks(task));
 end
 
-set(gcf, 'Position', 1000*[0.2826    0.2538    1.0280    0.6024], 'Color', 'w');
+set(gcf, 'Position', 1000*[0.2162    0.2538    1.1432    0.6024], 'Color', 'w');
 
 %% circle 20 tasks
 figure();
@@ -59,7 +59,7 @@ erroradd3(dist1, dist2, dist3, dist4, dist5, 1/255*[217 95 2]);
 box off
 set(gca, 'FontSize', 15, 'LineWidth', 2);
 xlabel('Task');
-ylabel('Path Variation (mm)');
+ylabel('r_{DTW} (mm)');
 
 %% bayesian cases
 
@@ -134,7 +134,7 @@ set(gca, 'FontSize', 15, 'LineWidth', 2);
 ylim([0 16000]);
 xlim([-5 200]);
 xlabel('Angle (^o)');
-ylabel('Path Variation (mm)');
+ylabel('r_{DTW} (mm)');
 
 %% plot all shapes and tasks
 
