@@ -36,6 +36,7 @@ xlabel('\theta_{target} (^o)');
 ylabel('Completion Time (s)')
 legend({'BO';'DDPG (ii, iv, v)'})
 %title('Changing \theta_{target}')
+ylim([0 100]);
 
 set(gcf, 'Position', 1000*[0.1210    0.5082    0.586    0.3508]);
 
@@ -74,6 +75,7 @@ xlabel('Circle Diameter (mm)')
 ylabel('Completion Time (s)');
 legend({'DDPG: Task i'; 'DDPG: Task ii'})
 %title('Changing d_{object}')
+ylim([0 100]);
 
 set(gcf, 'Position', 1000*[0.707    0.5082    0.586    0.3508]);
 

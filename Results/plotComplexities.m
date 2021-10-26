@@ -60,6 +60,7 @@ box off
 set(gca, 'FontSize', 15, 'LineWidth', 2);
 xlabel('Task');
 ylabel('r_{DTW} (mm)');
+ylim([0 15000]);
 
 %% bayesian cases
 
@@ -135,6 +136,7 @@ ylim([0 16000]);
 xlim([-5 200]);
 xlabel('Angle (^o)');
 ylabel('r_{DTW} (mm)');
+ylim([0 15000]);
 
 %% plot all shapes and tasks
 
