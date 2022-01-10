@@ -12,10 +12,10 @@ for task = 1:5
     rad20 = zeros(10,1);
     pairs = nchoosek(1:5, 2);
     for i = 1:10
-        rad8(i) = Circle8.warp(task, pairs(i,1), pairs(i,2));
-        rad20(i) = Circle20.warp(task, pairs(i,1), pairs(i,2));
-        rad46(i) = Circle46.warp(task, pairs(i,1), pairs(i,2));
-        rad72(i) = Circle72.warp(4, pairs(i,1), pairs(i,2));
+        rad8(i) = Circle8.warp(task, pairs(i,1), pairs(i,2))./180;
+        rad20(i) = Circle20.warp(task, pairs(i,1), pairs(i,2))./180;
+        rad46(i) = Circle46.warp(task, pairs(i,1), pairs(i,2))./180;
+        rad72(i) = Circle72.warp(4, pairs(i,1), pairs(i,2))./180;
     end
     % pairs = nchoosek(1:10, 2);
     % for i = 1:45
@@ -24,18 +24,18 @@ for task = 1:5
 
     erroradd2(rad8, rad20, rad46, rad72, 1/255*[217 95 2]);
     box off
-    set(gca, 'FontSize', 15, 'LineWidth', 2);
+    set(gca, 'FontSize', 15, 'LineWidth', 2, 'YScale', 'log');
     %set(gcf, 'Position', [489   469   776   390]);
     xlabel('Circle Diameter (mm)')
-    ylim([0 15000])
-    ylabel('r_{DTW}(mm)');
+    ylim([0.1 15000/180])
+    ylabel('r_{DTW}/r_c');
     %legend({'DDPG'}, 'Location', 'se')
     %title('Changing d_{object}')
     tasks = ["i"; "ii"; "iii"; "iv"; "v"];
     title('Task ' + tasks(task));
 end
 
-set(gcf, 'Position', 1000*[0.2162    0.2538    1.1432    0.6024], 'Color', 'w');
+set(gcf, 'Position', 1000*[0.2162    0.2138    1.1432    0.6424], 'Color', 'w');
 
 %% circle 20 tasks
 figure();

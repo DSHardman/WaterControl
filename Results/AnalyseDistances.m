@@ -13,7 +13,7 @@ for i = 1:10
     proximities(5,i) = vfinal(i).proximity(-pi);
 end
 
-proximities = proximities - 10;  % measure the gap between object & container edges
+proximities = (proximities - 10)/180;  % measure the gap between object & container edges & dimensionless
 
 figure();
 boxplot(proximities.', 'Labels', {'i','ii', 'iii', 'iv', 'v'},...
@@ -26,7 +26,7 @@ set(gca, 'FontSize', 15);
 set(gcf, 'Position', [341.0000  453.0000  862.4000  242.4000]);
 box off
 
-ylim([0 220]);
+%ylim([0 220]);
 
 %% bayesian case
 proximities = zeros(3,5);
@@ -76,7 +76,7 @@ for i = 1:5
     proximities(3,i) = d;
 end
 
-proximities = proximities - 10;  % measure the gap between object & container edges
+proximities = (proximities - 10)/180;  % measure the gap between object & container edges
 
 figure();
 boxplot(proximities.', 'Labels', {'0','90', '180'},...
@@ -89,4 +89,4 @@ set(gca, 'FontSize', 15);
 set(gcf, 'Position', [501.8000  360.2000  654.4000  225.6000]);
 box off
 
-ylim([0 60]);
+%ylim([0 60]);
